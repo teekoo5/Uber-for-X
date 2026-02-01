@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Helsinki Taxi</string>
+    <string name="company_name">Helsinki Taxi Oy</string>
+    <string name="support_phone">+358 9 123 4567</string>
+    <string name="support_email">support@helsinkitaxi.fi</string>
+</resources>

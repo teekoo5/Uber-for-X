@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mobility App</string>
+    <string name="company_name">White Label Mobility</string>
+    <string name="support_phone">+358 0 000 0000</string>
+    <string name="support_email">support@mobility.app</string>
+</resources>
