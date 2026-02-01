@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>Helsinki Taxi</string>
+    <key>CFBundleIdentifier</key>
+    <string>fi.helsinkitaxi.rider</string>
+    <key>CFBundleName</key>
+    <string>Helsinki Taxi</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(FLUTTER_BUILD_NAME)</string>
+    <key>CFBundleVersion</key>
+    <string>$(FLUTTER_BUILD_NUMBER)</string>
+    <key>FLAVOR</key>
+    <string>helsinki_taxi</string>
+    <key>DEFAULT_API_ENDPOINT</key>
+    <string>https://api.helsinkitaxi.fi</string>
+    <key>DEFAULT_TENANT_ID</key>
+    <string>helsinki_001</string>
+</dict>
+</plist>
