@@ -1,69 +1,131 @@
-# Welcome to your Lovable project
+# FleetDrive
 
-## Project info
+**White-label ride-hailing platform for taxi companies**
 
-**URL**: https://lovable.dev/projects/92dc0c12-c831-4ed8-9ab7-0f875920f45d
+Launch your own Uber-like service with your brand. FleetDrive provides everything you need: mobile apps for riders and drivers, real-time dispatch, fleet management dashboard, and scalable backend infrastructure.
 
-## How can I edit this code?
+## Overview
 
-There are several ways of editing your application.
+FleetDrive is a complete white-label mobility platform designed for taxi companies and fleet operators who want to modernize their operations without building technology from scratch.
 
-**Use Lovable**
+### Key Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/92dc0c12-c831-4ed8-9ab7-0f875920f45d) and start prompting.
+- **White-Label Mobile Apps** - Fully branded iOS and Android apps for riders and drivers
+- **Real-Time Fleet Tracking** - Live GPS tracking with sub-second updates
+- **Smart Dispatch System** - AI-powered driver matching based on ETA and traffic
+- **Analytics Dashboard** - Comprehensive insights into fleet performance and revenue
+- **Surge Pricing Engine** - Dynamic pricing based on supply and demand
+- **Multi-Tenant Architecture** - Isolated data and branding per client
 
-Changes made via Lovable will be committed automatically to this repo.
+## Project Structure
 
-**Use your preferred IDE**
+```
+├── src/                      # Landing page (React/Vite/Tailwind)
+├── backend/
+│   └── core-api/             # Node.js API (Hono, Drizzle, Kafka, Redis)
+├── mobile_app/               # Flutter apps (iOS/Android, rider & driver)
+├── dispatcher-dashboard/     # Fleet management dashboard (React)
+├── k8s/                      # Kubernetes deployment configs
+└── docs/                     # Architecture documentation
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+| Layer | Technology |
+|-------|------------|
+| Landing Page | React, Vite, Tailwind CSS, shadcn/ui |
+| Mobile Apps | Flutter, Riverpod, Google Maps |
+| Backend API | Node.js, Hono, TypeScript, Drizzle ORM |
+| Database | PostgreSQL with PostGIS |
+| Cache & Geo | Redis with GEO commands |
+| Messaging | Apache Kafka |
+| Infrastructure | Kubernetes, Docker |
 
-Follow these steps:
+## Quick Start
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Landing Page
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+```bash
+# Install dependencies
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Backend API
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+cd backend/core-api
 
-**Use GitHub Codespaces**
+# Copy environment variables
+cp .env.example .env
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Start with Docker Compose
+docker-compose up -d
+```
 
-## What technologies are used for this project?
+### Mobile App
 
-This project is built with .
+```bash
+cd mobile_app
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Get Flutter dependencies
+flutter pub get
 
-## How can I deploy this project?
+# Run for specific flavor
+flutter run --flavor taxiCoHelsinki
+```
 
-Simply open [Lovable](https://lovable.dev/projects/92dc0c12-c831-4ed8-9ab7-0f875920f45d) and click on Share -> Publish.
+### Dispatcher Dashboard
 
-## I want to use a custom domain - is that possible?
+```bash
+cd dispatcher-dashboard
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+## Architecture
+
+The platform uses an event-driven microservices architecture:
+
+- **API Gateway** - Request routing, authentication, rate limiting
+- **Core API** - Ride management, user accounts, payments
+- **Location Service** - Real-time GPS tracking via WebSockets
+- **Dispatch Engine** - Driver matching with ETA-based algorithms
+- **Kafka** - Event streaming between services
+- **Redis** - Geospatial indexing for proximity queries
+
+See [Architecture Specification](docs/ARCHITECTURE_SPECIFICATION.md) for detailed documentation.
+
+## Deployment
+
+Kubernetes manifests are provided in the `k8s/` directory:
+
+```bash
+# Create namespace
+kubectl apply -f k8s/namespace.yaml
+
+# Deploy all services
+kubectl apply -f k8s/
+```
+
+## Pricing
+
+| Plan | Vehicles | Price |
+|------|----------|-------|
+| Starter | Up to 25 | $299/month |
+| Professional | Up to 100 | $799/month |
+| Enterprise | Unlimited | Custom |
+
+## License
+
+Proprietary - All rights reserved.
+
+## Contact
+
+For demos and inquiries, visit the landing page or contact the sales team.
