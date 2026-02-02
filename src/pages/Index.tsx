@@ -109,7 +109,7 @@ const Index = () => {
       </div>
 
       {/* CTA Section */}
-      <section className="container px-4 py-20 relative bg-black">
+      <section id="cta" className="container px-4 py-20 relative bg-black">
         <div 
           className="absolute inset-0 opacity-40"
           style={{
