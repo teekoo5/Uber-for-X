@@ -71,10 +71,11 @@ export const PricingSection = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         <PricingTier
-          name="Starter"
-          price="$2,499"
-          description="Perfect for small taxi companies just getting started"
+          name="Small Fleet"
+          price="€4,999"
+          description="For fleets with up to 25 vehicles"
           features={[
+            "Up to 25 vehicles",
             "Complete source code",
             "Rider & Driver mobile apps",
             "Basic dispatch dashboard",
@@ -85,11 +86,12 @@ export const PricingSection = () => {
           cta="Get Started"
         />
         <PricingTier
-          name="Professional"
-          price="$4,999"
-          description="For growing fleets that need advanced features"
+          name="Medium Fleet"
+          price="€14,999"
+          description="For fleets with 26-100 vehicles"
           features={[
-            "Everything in Starter",
+            "Up to 100 vehicles",
+            "Everything in Small Fleet",
             "White-label branding kit",
             "Advanced analytics dashboard",
             "Surge pricing engine",
@@ -101,11 +103,12 @@ export const PricingSection = () => {
           cta="Get Started"
         />
         <PricingTier
-          name="Enterprise"
-          price="$9,999"
-          description="Full-scale solution for large taxi operations"
+          name="Large Fleet"
+          price="€29,999"
+          description="For fleets with 100+ vehicles"
           features={[
-            "Everything in Professional",
+            "Unlimited vehicles",
+            "Everything in Medium Fleet",
             "Dedicated infrastructure setup",
             "Custom integrations",
             "Regulatory compliance tools",
