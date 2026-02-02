@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import { FeaturesSection } from "@/components/features/FeaturesSection";
 import { PricingSection } from "@/components/pricing/PricingSection";
-import LogoCarousel from "@/components/LogoCarousel";
-import TestimonialsSection from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
@@ -90,9 +88,6 @@ const Index = () => {
         </motion.div>
       </motion.section>
 
-      {/* Logo Carousel */}
-      <LogoCarousel />
-
       {/* Features Section */}
       <div id="features" className="bg-black">
         <FeaturesSection />
@@ -101,11 +96,6 @@ const Index = () => {
       {/* Pricing Section */}
       <div id="pricing" className="bg-black">
         <PricingSection />
-      </div>
-
-      {/* Testimonials Section */}
-      <div className="bg-black">
-        <TestimonialsSection />
       </div>
 
       {/* CTA Section */}
@@ -125,10 +115,10 @@ const Index = () => {
           className="bg-[#0A0A0A]/80 backdrop-blur-lg border border-white/10 rounded-2xl p-8 md:p-12 text-center relative z-10"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to modernize your taxi business?
+            Ready to launch your taxi platform?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join hundreds of taxi companies who have transformed their operations with FleetDrive.
+            Get the complete source code and start building your ride-hailing business today.
           </p>
           <Button size="lg" className="button-gradient">
             Get Started Today
