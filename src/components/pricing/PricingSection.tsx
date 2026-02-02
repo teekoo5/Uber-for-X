@@ -28,7 +28,7 @@ const PricingTier = ({
       <h3 className="text-xl font-medium mb-2">{name}</h3>
       <div className="mb-4">
         <span className="text-4xl font-bold">{price}</span>
-        {price !== "Custom" && <span className="text-gray-400">/month</span>}
+        {price !== "Custom" && <span className="text-gray-400"> one-time</span>}
       </div>
       <p className="text-gray-400 mb-6">{description}</p>
       <ul className="space-y-3 mb-8 flex-grow">
@@ -65,53 +65,55 @@ export const PricingSection = () => {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="text-lg text-gray-400"
         >
-          Scale your taxi business with plans that grow with you
+          One-time purchase. Lifetime access. No recurring fees.
         </motion.p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         <PricingTier
           name="Starter"
-          price="$299"
+          price="$2,499"
           description="Perfect for small taxi companies just getting started"
           features={[
-            "Up to 25 vehicles",
+            "Complete source code",
             "Rider & Driver mobile apps",
             "Basic dispatch dashboard",
             "Real-time GPS tracking",
-            "Email support"
+            "6 months email support",
+            "Documentation & setup guide"
           ]}
-          cta="Start Free Trial"
+          cta="Get Started"
         />
         <PricingTier
           name="Professional"
-          price="$799"
+          price="$4,999"
           description="For growing fleets that need advanced features"
           features={[
-            "Up to 100 vehicles",
-            "White-label branding",
-            "Advanced analytics",
+            "Everything in Starter",
+            "White-label branding kit",
+            "Advanced analytics dashboard",
             "Surge pricing engine",
-            "API access",
-            "Priority support"
+            "Full API documentation",
+            "12 months priority support",
+            "1-on-1 setup assistance"
           ]}
           isPopular
-          cta="Start Free Trial"
+          cta="Get Started"
         />
         <PricingTier
           name="Enterprise"
-          price="Custom"
+          price="$9,999"
           description="Full-scale solution for large taxi operations"
           features={[
-            "Unlimited vehicles",
-            "Dedicated infrastructure",
+            "Everything in Professional",
+            "Dedicated infrastructure setup",
             "Custom integrations",
             "Regulatory compliance tools",
-            "Dedicated account manager",
-            "24/7 phone support",
-            "SLA guarantee"
+            "Lifetime priority support",
+            "Deployment assistance",
+            "Custom feature development"
           ]}
-          cta="Contact Sales"
+          cta="Get Started"
         />
       </div>
     </section>

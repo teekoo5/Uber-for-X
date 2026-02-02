@@ -131,7 +131,7 @@ const Index = () => {
             Join hundreds of taxi companies who have transformed their operations with FleetDrive.
           </p>
           <Button size="lg" className="button-gradient">
-            Start Free Trial
+            Get Started Today
             <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
         </motion.div>
