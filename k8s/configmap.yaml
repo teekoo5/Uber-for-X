@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mobility-config
+  namespace: mobility-platform
+data:
+  # Environment
+  NODE_ENV: "production"
+  
+  # Service URLs (internal)
+  CORE_API_URL: "http://core-api:3000"
+  LOCATION_SERVICE_URL: "http://location-service:3001"
+  LOCATION_SERVICE_WS_URL: "ws://location-service:3001/ws"
+  
+  # Redis
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  
+  # Kafka
+  KAFKA_BROKERS: "kafka:9092"
+  KAFKA_CLIENT_ID: "mobility-platform"
+  KAFKA_GROUP_ID: "mobility-group"
+  
+  # Multi-tenant
+  DEFAULT_TENANT_ID: "helsinki_taxi"
+  ENABLE_TENANT_ISOLATION: "true"
+  
+  # Finnish compliance
+  VAT_RATE_PASSENGER_TRANSPORT: "0.135"
+  VAT_RATE_GOODS_TRANSPORT: "0.255"
+  
+  # Location
+  DEFAULT_SEARCH_RADIUS: "5000"
+  MAX_SEARCH_RADIUS: "10000"
+  DRIVER_TTL_SECONDS: "300"
+  
+  # Pricing
+  DEFAULT_BASE_FARE: "5.90"
+  DEFAULT_PER_KM_RATE: "1.60"
+  DEFAULT_PER_MINUTE_RATE: "0.80"
+  DEFAULT_MINIMUM_FARE: "8.00"
+  
+  # Logging
+  LOG_LEVEL: "info"

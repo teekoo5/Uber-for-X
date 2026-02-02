@@ -1,0 +1,42 @@
+---
+# Namespace for mobility platform
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mobility-platform
+  labels:
+    app.kubernetes.io/name: mobility-platform
+    app.kubernetes.io/managed-by: kubectl
+---
+# Resource quota to prevent noisy neighbor issues
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: mobility-quota
+  namespace: mobility-platform
+spec:
+  hard:
+    requests.cpu: "8"
+    requests.memory: 16Gi
+    limits.cpu: "16"
+    limits.memory: 32Gi
+    pods: "50"
+    services: "20"
+    secrets: "30"
+    configmaps: "30"
+---
+# Limit range for default resource limits
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mobility-limits
+  namespace: mobility-platform
+spec:
+  limits:
+    - default:
+        cpu: "500m"
+        memory: "512Mi"
+      defaultRequest:
+        cpu: "100m"
+        memory: "128Mi"
+      type: Container

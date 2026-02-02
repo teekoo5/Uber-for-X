@@ -1,0 +1,27 @@
+# Matchfile - iOS code signing configuration
+# Uses match for centralized certificate management
+
+git_url ENV['MATCH_GIT_URL'] || 'git@github.com:your-org/certificates.git'
+storage_mode 'git'
+
+type 'appstore' # Can be 'appstore', 'adhoc', 'development', 'enterprise'
+
+# App identifiers for all white-label apps
+app_identifier [
+  'fi.helsinkitaxi.rider',
+  'com.mobility.app',
+]
+
+# Team configuration
+team_id ENV['TEAM_ID']
+username ENV['APPLE_ID']
+
+# Clone settings
+clone_branch_directly true
+shallow_clone true
+
+# Force recreation of provisioning profiles
+force_for_new_devices true
+
+# Platform
+platform 'ios'

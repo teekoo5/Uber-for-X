@@ -1,0 +1,276 @@
+# GitHub Actions workflow for mobile app CI/CD
+
+name: Mobile CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'mobile_app/**'
+      - '.github/workflows/mobile-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'mobile_app/**'
+
+env:
+  FLUTTER_VERSION: '3.16.0'
+
+jobs:
+  # ========================================
+  # Test Job
+  # ========================================
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile_app
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Analyze code
+        run: flutter analyze
+      
+      - name: Run tests
+        run: flutter test --coverage
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: mobile_app/coverage/lcov.info
+          fail_ci_if_error: false
+
+  # ========================================
+  # Build Android Job
+  # ========================================
+  build-android:
+    name: Build Android (${{ matrix.flavor }})
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: mobile_app
+    
+    strategy:
+      matrix:
+        flavor: [helsinki_taxi, white_label_base]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build APK
+        run: |
+          flutter build apk \
+            --flavor ${{ matrix.flavor }} \
+            --dart-define=FLAVOR=${{ matrix.flavor }} \
+            --dart-define=API_ENDPOINT=${{ vars.API_ENDPOINT }} \
+            --dart-define=TENANT_ID=${{ matrix.flavor }} \
+            --release
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-${{ matrix.flavor }}-apk
+          path: mobile_app/build/app/outputs/flutter-apk/app-${{ matrix.flavor }}-release.apk
+          retention-days: 7
+
+  # ========================================
+  # Build iOS Job
+  # ========================================
+  build-ios:
+    name: Build iOS (${{ matrix.flavor }})
+    needs: test
+    runs-on: macos-latest
+    if: github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: mobile_app
+    
+    strategy:
+      matrix:
+        flavor: [helsinki_taxi, white_label_base]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: mobile_app
+      
+      - name: Install Fastlane
+        run: |
+          cd fastlane
+          bundle install
+      
+      - name: Build iOS (no-codesign)
+        run: |
+          flutter build ios \
+            --flavor ${{ matrix.flavor }} \
+            --dart-define=FLAVOR=${{ matrix.flavor }} \
+            --dart-define=API_ENDPOINT=${{ vars.API_ENDPOINT }} \
+            --dart-define=TENANT_ID=${{ matrix.flavor }} \
+            --release \
+            --no-codesign
+      
+      - name: Upload iOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-${{ matrix.flavor }}-build
+          path: mobile_app/build/ios/iphoneos
+          retention-days: 7
+
+  # ========================================
+  # Deploy to TestFlight (iOS)
+  # ========================================
+  deploy-ios:
+    name: Deploy iOS to TestFlight
+    needs: build-ios
+    runs-on: macos-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    defaults:
+      run:
+        working-directory: mobile_app
+    
+    strategy:
+      matrix:
+        flavor: [helsinki_taxi]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: mobile_app
+      
+      - name: Install Fastlane
+        run: bundle install
+        working-directory: mobile_app/fastlane
+      
+      - name: Deploy to TestFlight
+        env:
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.ASC_KEY }}
+        run: |
+          bundle exec fastlane ios deploy flavor:${{ matrix.flavor }}
+        working-directory: mobile_app/fastlane
+
+  # ========================================
+  # Deploy to Play Store (Android)
+  # ========================================
+  deploy-android:
+    name: Deploy Android to Play Store
+    needs: build-android
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    defaults:
+      run:
+        working-directory: mobile_app
+    
+    strategy:
+      matrix:
+        flavor: [helsinki_taxi]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+          working-directory: mobile_app
+      
+      - name: Install Fastlane
+        run: bundle install
+        working-directory: mobile_app/fastlane
+      
+      - name: Decode keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+      
+      - name: Deploy to Play Store
+        env:
+          GOOGLE_PLAY_JSON_KEY: ${{ secrets.GOOGLE_PLAY_JSON_KEY }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          bundle exec fastlane android deploy flavor:${{ matrix.flavor }}
+        working-directory: mobile_app/fastlane

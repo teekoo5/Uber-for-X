@@ -9,12 +9,14 @@ const PricingTier = ({
   description,
   features,
   isPopular,
+  cta,
 }: {
   name: string;
   price: string;
   description: string;
   features: string[];
   isPopular?: boolean;
+  cta?: string;
 }) => (
   <CardSpotlight className={`h-full ${isPopular ? "border-primary" : "border-white/10"} border-2`}>
     <div className="relative h-full p-6 flex flex-col">
@@ -38,7 +40,7 @@ const PricingTier = ({
         ))}
       </ul>
       <Button className="button-gradient w-full">
-        Start Trading
+        {cta || "Get Started"}
       </Button>
     </div>
   </CardSpotlight>
@@ -54,8 +56,8 @@ export const PricingSection = () => {
           transition={{ duration: 0.5 }}
           className="text-5xl md:text-6xl font-normal mb-6"
         >
-          Choose Your{" "}
-          <span className="text-gradient font-medium">Trading Plan</span>
+          Simple{" "}
+          <span className="text-gradient font-medium">Transparent Pricing</span>
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -63,47 +65,53 @@ export const PricingSection = () => {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="text-lg text-gray-400"
         >
-          Select the perfect trading plan with advanced features and competitive fees
+          Scale your taxi business with plans that grow with you
         </motion.p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         <PricingTier
-          name="Basic Trader"
-          price="$0"
-          description="Perfect for beginners starting their crypto journey"
+          name="Starter"
+          price="$299"
+          description="Perfect for small taxi companies just getting started"
           features={[
-            "Basic spot trading",
-            "Market & limit orders",
-            "Basic market analysis",
+            "Up to 25 vehicles",
+            "Rider & Driver mobile apps",
+            "Basic dispatch dashboard",
+            "Real-time GPS tracking",
             "Email support"
           ]}
+          cta="Start Free Trial"
         />
         <PricingTier
-          name="Pro Trader"
-          price="$29"
-          description="Advanced features for serious traders"
+          name="Professional"
+          price="$799"
+          description="For growing fleets that need advanced features"
           features={[
-            "Advanced trading tools",
-            "Margin trading up to 10x",
-            "Advanced technical analysis",
-            "Priority support",
-            "API access"
+            "Up to 100 vehicles",
+            "White-label branding",
+            "Advanced analytics",
+            "Surge pricing engine",
+            "API access",
+            "Priority support"
           ]}
           isPopular
+          cta="Start Free Trial"
         />
         <PricingTier
-          name="Institutional"
+          name="Enterprise"
           price="Custom"
-          description="Enterprise-grade solutions for institutions"
+          description="Full-scale solution for large taxi operations"
           features={[
-            "Custom trading solutions",
-            "Unlimited trading volume",
-            "OTC desk access",
+            "Unlimited vehicles",
+            "Dedicated infrastructure",
+            "Custom integrations",
+            "Regulatory compliance tools",
             "Dedicated account manager",
-            "Custom API integration",
-            "24/7 priority support"
+            "24/7 phone support",
+            "SLA guarantee"
           ]}
+          cta="Contact Sales"
         />
       </div>
     </section>

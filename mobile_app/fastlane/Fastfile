@@ -1,0 +1,302 @@
+# Fastfile for White-Label Mobility Platform
+# Automates building, signing, and deploying multiple branded apps
+
+default_platform(:ios)
+
+# ========================================
+# CONFIGURATION
+# ========================================
+
+# Flavor configurations for white-label builds
+FLAVORS = {
+  'helsinki_taxi' => {
+    app_name: 'Helsinki Taxi',
+    bundle_id_ios: 'fi.helsinkitaxi.rider',
+    bundle_id_android: 'fi.helsinkitaxi.rider',
+    api_endpoint: 'https://api.helsinkitaxi.fi',
+    ws_endpoint: 'wss://ws.helsinkitaxi.fi/ws',
+    tenant_id: 'helsinki_001',
+  },
+  'white_label_base' => {
+    app_name: 'Mobility App',
+    bundle_id_ios: 'com.mobility.app',
+    bundle_id_android: 'com.mobility.app',
+    api_endpoint: 'https://api.mobility.app',
+    ws_endpoint: 'wss://ws.mobility.app/ws',
+    tenant_id: 'demo_tenant',
+  },
+}
+
+# ========================================
+# iOS LANES
+# ========================================
+
+platform :ios do
+  desc 'Build and deploy iOS app for a specific flavor'
+  lane :deploy do |options|
+    flavor = options[:flavor] || 'helsinki_taxi'
+    config = FLAVORS[flavor]
+    
+    UI.message("Building iOS app for flavor: #{flavor}")
+    
+    # Setup code signing with Match
+    setup_code_signing(flavor: flavor, config: config)
+    
+    # Build the Flutter app
+    build_flutter_ios(flavor: flavor, config: config)
+    
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      distribute_external: false,
+    )
+    
+    # Notify on success
+    slack_notification(
+      message: "iOS #{config[:app_name]} deployed to TestFlight! 🚀",
+      success: true,
+    )
+  end
+  
+  desc 'Build iOS app without deploying'
+  lane :build do |options|
+    flavor = options[:flavor] || 'helsinki_taxi'
+    config = FLAVORS[flavor]
+    
+    setup_code_signing(flavor: flavor, config: config)
+    build_flutter_ios(flavor: flavor, config: config)
+  end
+  
+  desc 'Setup code signing with Match'
+  private_lane :setup_code_signing do |options|
+    flavor = options[:flavor]
+    config = options[:config]
+    
+    match(
+      type: 'appstore',
+      app_identifier: config[:bundle_id_ios],
+      readonly: is_ci,
+      verbose: true,
+    )
+  end
+  
+  desc 'Build Flutter iOS app'
+  private_lane :build_flutter_ios do |options|
+    flavor = options[:flavor]
+    config = options[:config]
+    
+    # Run Flutter build
+    Dir.chdir('..') do
+      sh(
+        'flutter', 'build', 'ipa',
+        '--flavor', flavor,
+        '--dart-define=FLAVOR=#{flavor}',
+        '--dart-define=API_ENDPOINT=#{config[:api_endpoint]}',
+        '--dart-define=WS_ENDPOINT=#{config[:ws_endpoint]}',
+        '--dart-define=TENANT_ID=#{config[:tenant_id]}',
+        '--dart-define=APP_NAME=#{config[:app_name]}',
+        '--release',
+      )
+    end
+    
+    # Set the IPA path for gym
+    gym(
+      workspace: 'ios/Runner.xcworkspace',
+      scheme: flavor,
+      export_method: 'app-store',
+      output_directory: './build/ios',
+      output_name: "#{flavor}.ipa",
+    )
+  end
+  
+  desc 'Run iOS tests'
+  lane :test do
+    Dir.chdir('..') do
+      sh('flutter', 'test')
+    end
+  end
+end
+
+# ========================================
+# ANDROID LANES
+# ========================================
+
+platform :android do
+  desc 'Build and deploy Android app for a specific flavor'
+  lane :deploy do |options|
+    flavor = options[:flavor] || 'helsinki_taxi'
+    config = FLAVORS[flavor]
+    
+    UI.message("Building Android app for flavor: #{flavor}")
+    
+    # Build the Flutter app
+    build_flutter_android(flavor: flavor, config: config)
+    
+    # Upload to Play Store (internal track)
+    upload_to_play_store(
+      track: 'internal',
+      aab: "./build/app/outputs/bundle/#{flavor}Release/app-#{flavor}-release.aab",
+      package_name: config[:bundle_id_android],
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+    
+    # Notify on success
+    slack_notification(
+      message: "Android #{config[:app_name]} deployed to Play Store Internal! 🚀",
+      success: true,
+    )
+  end
+  
+  desc 'Build Android app without deploying'
+  lane :build do |options|
+    flavor = options[:flavor] || 'helsinki_taxi'
+    config = FLAVORS[flavor]
+    
+    build_flutter_android(flavor: flavor, config: config)
+  end
+  
+  desc 'Build Flutter Android app'
+  private_lane :build_flutter_android do |options|
+    flavor = options[:flavor]
+    config = options[:config]
+    
+    # Run Flutter build
+    Dir.chdir('..') do
+      sh(
+        'flutter', 'build', 'appbundle',
+        '--flavor', flavor,
+        '--dart-define=FLAVOR=#{flavor}',
+        '--dart-define=API_ENDPOINT=#{config[:api_endpoint]}',
+        '--dart-define=WS_ENDPOINT=#{config[:ws_endpoint]}',
+        '--dart-define=TENANT_ID=#{config[:tenant_id]}',
+        '--dart-define=APP_NAME=#{config[:app_name]}',
+        '--release',
+      )
+    end
+  end
+  
+  desc 'Build APK for testing'
+  lane :build_apk do |options|
+    flavor = options[:flavor] || 'helsinki_taxi'
+    config = FLAVORS[flavor]
+    
+    Dir.chdir('..') do
+      sh(
+        'flutter', 'build', 'apk',
+        '--flavor', flavor,
+        '--dart-define=FLAVOR=#{flavor}',
+        '--dart-define=API_ENDPOINT=#{config[:api_endpoint]}',
+        '--dart-define=WS_ENDPOINT=#{config[:ws_endpoint]}',
+        '--dart-define=TENANT_ID=#{config[:tenant_id]}',
+        '--dart-define=APP_NAME=#{config[:app_name]}',
+        '--release',
+      )
+    end
+  end
+  
+  desc 'Run Android tests'
+  lane :test do
+    Dir.chdir('..') do
+      sh('flutter', 'test')
+    end
+  end
+end
+
+# ========================================
+# CROSS-PLATFORM LANES
+# ========================================
+
+desc 'Build all flavors for both platforms'
+lane :build_all do
+  FLAVORS.keys.each do |flavor|
+    UI.header("Building #{flavor}")
+    
+    # Build iOS
+    begin
+      ios build(flavor: flavor)
+    rescue => e
+      UI.error("iOS build failed for #{flavor}: #{e.message}")
+    end
+    
+    # Build Android
+    begin
+      android build(flavor: flavor)
+    rescue => e
+      UI.error("Android build failed for #{flavor}: #{e.message}")
+    end
+  end
+end
+
+desc 'Run all tests'
+lane :test do
+  Dir.chdir('..') do
+    sh('flutter', 'test')
+    sh('flutter', 'analyze')
+  end
+end
+
+desc 'Increment version number'
+lane :bump_version do |options|
+  # Read current version from pubspec.yaml
+  pubspec = File.read('../pubspec.yaml')
+  current_version = pubspec.match(/version: (\d+\.\d+\.\d+)\+(\d+)/)[1]
+  current_build = pubspec.match(/version: (\d+\.\d+\.\d+)\+(\d+)/)[2].to_i
+  
+  # Increment
+  bump_type = options[:type] || 'patch'
+  version_parts = current_version.split('.').map(&:to_i)
+  
+  case bump_type
+  when 'major'
+    version_parts[0] += 1
+    version_parts[1] = 0
+    version_parts[2] = 0
+  when 'minor'
+    version_parts[1] += 1
+    version_parts[2] = 0
+  when 'patch'
+    version_parts[2] += 1
+  end
+  
+  new_version = version_parts.join('.')
+  new_build = current_build + 1
+  
+  # Update pubspec.yaml
+  new_pubspec = pubspec.gsub(
+    /version: \d+\.\d+\.\d+\+\d+/,
+    "version: #{new_version}+#{new_build}"
+  )
+  File.write('../pubspec.yaml', new_pubspec)
+  
+  UI.success("Version bumped to #{new_version}+#{new_build}")
+end
+
+# ========================================
+# HELPER METHODS
+# ========================================
+
+def slack_notification(message:, success:)
+  # Only send if webhook URL is configured
+  webhook_url = ENV['SLACK_WEBHOOK_URL']
+  return unless webhook_url
+  
+  slack(
+    message: message,
+    success: success,
+    slack_url: webhook_url,
+    default_payloads: [:git_branch, :git_author],
+  )
+end
+
+# ========================================
+# ERROR HANDLING
+# ========================================
+
+error do |lane, exception|
+  slack_notification(
+    message: "Build failed in lane #{lane}: #{exception.message}",
+    success: false,
+  )
+end

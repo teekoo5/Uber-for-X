@@ -72,15 +72,15 @@ class _MobilityAppState extends ConsumerState<MobilityApp> {
         Locale('sv', 'SE'), // Swedish (official language in Finland)
       ],
       
-      // Home screen
-      home: const HomeScreen(),
+      // Home screen - mode selection
+      home: const ModeSelectionScreen(),
     );
   }
 }
 
-/// Temporary home screen placeholder
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+/// Mode selection screen - choose between rider and driver
+class ModeSelectionScreen extends StatelessWidget {
+  const ModeSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -88,23 +88,6 @@ class HomeScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(config.appName),
-        actions: [
-          // Accessibility: High contrast toggle
-          Semantics(
-            label: 'Toggle high contrast mode',
-            button: true,
-            child: IconButton(
-              icon: const Icon(Icons.contrast),
-              onPressed: () {
-                // Toggle high contrast mode
-              },
-              tooltip: 'High Contrast Mode',
-            ),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -137,50 +120,71 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 
-                // Flavor info
+                // Tagline
                 Text(
-                  'Flavor: ${config.flavorName}',
-                  style: theme.textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Tenant: ${config.tenantId}',
-                  style: theme.textTheme.bodyMedium,
+                  'Your ride, your way',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.grey[600],
+                  ),
                 ),
                 const SizedBox(height: 48),
                 
-                // Book a ride button
+                // Rider mode button
                 Semantics(
-                  label: 'Book a ride',
+                  label: 'Continue as rider',
                   button: true,
                   child: SizedBox(
                     width: double.infinity,
-                    height: AppConfig.minTouchTargetSize + 12,
+                    height: AppConfig.minTouchTargetSize + 16,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Navigate to booking screen
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const RiderHomeScreen(),
+                          ),
+                        );
                       },
-                      icon: const Icon(Icons.search),
-                      label: const Text('Book a Ride'),
+                      icon: const Icon(Icons.hail, size: 28),
+                      label: const Text(
+                        'I need a ride',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 
-                // Driver mode button (if applicable)
+                // Driver mode button
                 Semantics(
-                  label: 'Switch to driver mode',
+                  label: 'Continue as driver',
                   button: true,
                   child: SizedBox(
                     width: double.infinity,
-                    height: AppConfig.minTouchTargetSize + 12,
+                    height: AppConfig.minTouchTargetSize + 16,
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // Navigate to driver mode
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const DriverHomeScreen(),
+                          ),
+                        );
                       },
-                      icon: const Icon(Icons.drive_eta),
-                      label: const Text('Driver Mode'),
+                      icon: const Icon(Icons.drive_eta, size: 28),
+                      label: const Text(
+                        'I\'m a driver',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ),
+                  ),
+                ),
+                
+                const SizedBox(height: 48),
+                
+                // Version info
+                Text(
+                  '${config.flavorName} v1.0.0',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.grey,
                   ),
                 ),
               ],
@@ -191,3 +195,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
+// Import screens
+import 'screens/rider/home_screen.dart';
+import 'screens/driver/driver_home_screen.dart';

@@ -6,40 +6,40 @@ import { Card } from "./ui/card";
 
 const testimonials = [
   {
-    name: "Michael Chen",
-    role: "Professional Trader",
-    image: "https://avatars.githubusercontent.com/u/1234567?v=4",
-    content: "The real-time market data and advanced trading features have significantly improved my trading performance. The platform's security measures give me peace of mind."
+    name: "Mikko Virtanen",
+    role: "CEO, Helsinki Taxi Oy",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    content: "FleetDrive transformed our operations. We reduced dispatch time by 60% and our drivers love the intuitive app. The white-label solution means customers see our brand, not a generic platform."
   },
   {
-    name: "Sarah Johnson",
-    role: "Crypto Fund Manager",
-    image: "https://avatars.githubusercontent.com/u/2345678?v=4",
-    content: "CryptoTrade's institutional-grade tools have transformed our trading strategy. The API integration and automated features have saved us countless hours."
+    name: "Anna Korhonen",
+    role: "Operations Manager, Nordic Cabs",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
+    content: "The real-time tracking and analytics dashboard gives us visibility we never had before. We can now optimize routes and reduce idle time significantly."
   },
   {
-    name: "David Wilson",
-    role: "Early Crypto Investor",
-    image: "https://avatars.githubusercontent.com/u/3456789?v=4",
-    content: "The customer support is exceptional, and the platform's intuitive design made getting started with crypto trading seamless. A game-changer for both beginners and pros."
+    name: "Johan Lindqvist",
+    role: "Founder, Stockholm Express",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    content: "Going from a traditional phone-based dispatch to FleetDrive was seamless. The onboarding team made sure every driver was comfortable with the new system within days."
   },
   {
-    name: "Emily Zhang",
-    role: "DeFi Developer",
-    image: "https://avatars.githubusercontent.com/u/4567890?v=4",
-    content: "We've seen remarkable improvements in our trading efficiency since switching to CryptoTrade. The smart order routing and liquidity aggregation are particularly impressive."
+    name: "Maria Santos",
+    role: "Fleet Director, Porto Taxi",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    content: "The surge pricing feature during peak hours has increased our revenue by 25%. The platform handles everything from payments to driver payouts automatically."
   },
   {
-    name: "James Rodriguez",
-    role: "Crypto Security Expert",
-    image: "https://avatars.githubusercontent.com/u/5678901?v=4",
-    content: "The security features are robust and the regular updates keep us ahead of emerging threats. It's exactly what the crypto industry needed."
+    name: "Thomas Mueller",
+    role: "Managing Director, Berlin Mobility",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+    content: "What impressed us most was the regulatory compliance tools. FleetDrive keeps us compliant with local transport laws without any manual work on our end."
   },
   {
-    name: "Lisa Thompson",
-    role: "Portfolio Manager",
-    image: "https://avatars.githubusercontent.com/u/6789012?v=4",
-    content: "The platform's ability to handle complex trading strategies while maintaining simplicity in its interface is remarkable. It's been invaluable for our portfolio management."
+    name: "Elena Popov",
+    role: "COO, Baltic Rides",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face",
+    content: "We've expanded from 30 to 150 vehicles in one year thanks to the scalability of FleetDrive. The platform grows with us without any performance issues."
   }
 ];
 
@@ -54,9 +54,9 @@ const TestimonialsSection = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-normal mb-4">Trusted by Traders</h2>
+          <h2 className="text-5xl font-normal mb-4">Trusted by Taxi Companies</h2>
           <p className="text-muted-foreground text-lg">
-            Join thousands of satisfied traders on CryptoTrade
+            Join hundreds of taxi operators who've modernized their fleet with FleetDrive
           </p>
         </motion.div>
 

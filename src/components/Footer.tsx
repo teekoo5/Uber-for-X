@@ -1,4 +1,4 @@
-import { Github, Twitter } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Footer = () => {
@@ -8,31 +8,39 @@ const Footer = () => {
         <div className="glass glass-hover rounded-xl p-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
-              <h3 className="font-medium text-lg">CryptoTrade</h3>
+              <h3 className="font-medium text-lg">FleetDrive</h3>
               <p className="text-sm text-muted-foreground">
-                Empowering traders with advanced crypto trading solutions.
+                White-label ride-hailing platform for modern taxi companies.
               </p>
               <div className="flex space-x-4">
                 <Button variant="ghost" size="icon">
-                  <Twitter className="w-4 h-4" />
+                  <Linkedin className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="icon">
                   <Github className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <Mail className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="font-medium">Trading</h4>
+              <h4 className="font-medium">Product</h4>
               <ul className="space-y-2">
                 <li>
                   <a href="#features" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Markets
+                    Features
                   </a>
                 </li>
                 <li>
                   <a href="#pricing" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Trading Fees
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    API Documentation
                   </a>
                 </li>
               </ul>
@@ -43,12 +51,17 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li>
                   <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Trading Guide
+                    Case Studies
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Market Analysis
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    Blog
                   </a>
                 </li>
               </ul>
@@ -67,13 +80,18 @@ const Footer = () => {
                     Terms of Service
                   </a>
                 </li>
+                <li>
+                  <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    GDPR Compliance
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
 
           <div className="mt-8 pt-8 border-t border-white/10">
             <p className="text-sm text-muted-foreground text-center">
-              © {new Date().getFullYear()} Rezaul Arif. All rights reserved.
+              © {new Date().getFullYear()} FleetDrive. All rights reserved.
             </p>
           </div>
         </div>
